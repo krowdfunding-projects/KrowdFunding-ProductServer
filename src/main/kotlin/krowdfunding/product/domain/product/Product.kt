@@ -4,6 +4,7 @@ import krowdfunding.product.domain.BaseEntity
 import krowdfunding.product.domain.category.CategoryType
 import krowdfunding.product.domain.company.Company
 import krowdfunding.product.dto.CreateProductDto
+import krowdfunding.product.dto.UpdateProductDto
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -59,7 +60,7 @@ class Product(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
-    val company : Company? = null
+    var company : Company? = null
 
 ) : BaseEntity() {
     companion object{
@@ -74,6 +75,27 @@ class Product(
                 isActivated = true,
                 targetAmount = createProductDto.targetAmount,
             )
+        }
+    }
+
+    fun updateProductInfo(updateProductDto: UpdateProductDto){
+        updateProductDto.quantity?.let {
+            this.quantity = it
+        }
+        updateProductDto.content ?.let {
+            this.content = it
+        }
+        updateProductDto.type ?.let {
+            this.type = it
+        }
+        updateProductDto.title ?.let {
+            this.title=it
+        }
+        updateProductDto.fundingEndDate?.let {
+            this.fundingEndDate = it
+        }
+        updateProductDto.targetAmount?.let {
+            this.targetAmount = it
         }
     }
 
@@ -120,6 +142,6 @@ class Product(
     }
 
     fun addSupport(username:String){
-        this.supporters?.add(username)
+        this.supporters.add(username)
     }
 }

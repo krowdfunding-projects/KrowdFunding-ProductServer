@@ -2,10 +2,11 @@ package krowdfunding.product.domain.company
 
 import krowdfunding.product.domain.category.CategoryType
 import krowdfunding.product.domain.product.Product
+import krowdfunding.product.dto.CreateCompanyDto
 import javax.persistence.*
 
 @Entity
-@Table(name = "companys")
+@Table(name = "companys", indexes = [Index(columnList = "companyName")])
 class Company (
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "company_id")
@@ -23,15 +24,24 @@ class Company (
     var companyIndustry : MutableSet<CategoryType> = mutableSetOf(),
 
     @OneToMany(mappedBy = "company", cascade = [CascadeType.ALL])
-    val products : MutableList<Product> = mutableListOf()
+    val products : MutableList<Product> = mutableListOf(),
+
+    @ElementCollection
+    @CollectionTable(
+        name = "company_follower",
+        joinColumns = [JoinColumn(name = "member_name")])
+    @Column(name = "company_followers")
+    var followers : MutableSet<String> = mutableSetOf()
+
+
 ){
     companion object{
-        fun createCompany(companyName: String, presidentName: String, companyAddress: String ,companyIndustry: MutableSet<CategoryType>) : Company{
+        fun createCompany(companyDto: CreateCompanyDto) : Company{
             return Company(
-                companyName = companyName,
-                presidentName = presidentName,
-                companyAddress = companyAddress,
-                companyIndustry = companyIndustry
+                companyName = companyDto.companyName,
+                presidentName = companyDto.presidentName,
+                companyAddress = companyDto.companyAddress,
+                companyIndustry =  companyDto.companyIndustrys.toMutableSet()
             )
         }
     }
@@ -40,5 +50,12 @@ class Company (
         this.companyIndustry.add(categoryType)
     }
 
+    fun getFollowersCount() : Int{
+        return followers.size
+    }
 
+    fun addCompanyProduct(product:Product){
+        this.products.add(product)
+        product.company = this
+    }
 }
