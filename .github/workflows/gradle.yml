@@ -32,7 +32,7 @@ jobs:
         run: ./gradlew clean
 
       - name: build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --exclude-task test
 
       - name: Test with Gradle
         run: ./gradlew test
