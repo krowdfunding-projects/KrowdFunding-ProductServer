@@ -11,9 +11,7 @@ import java.util.UUID
 import javax.persistence.*
 
 
-/**
- * Querydsl 테스트용 엔티티
- */
+
 @Entity
 @Table(name = "products" , indexes = [Index(columnList = "productNumber")])
 class Product(
@@ -156,6 +154,6 @@ class Product(
                 it.add(this)
             }
         }
-        
+
     }
 }
