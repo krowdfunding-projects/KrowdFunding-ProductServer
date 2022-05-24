@@ -1,30 +1,24 @@
 package krowdfunding.product.repository.product
 
-import com.querydsl.jpa.impl.JPAQueryFactory
 import krowdfunding.product.domain.category.CategoryType
 import krowdfunding.product.domain.company.Company
 import krowdfunding.product.domain.product.Product
 import krowdfunding.product.dto.CreateCompanyDto
 import krowdfunding.product.dto.CreateProductDto
 import krowdfunding.product.repository.company.CompanyRepository
+import krowdfunding.product.repository.company.CompanyRepositoryTest
 import krowdfunding.product.service.testconfig.TestConfig
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @ExtendWith(SpringExtension::class)
 @DataJpaTest @Import(TestConfig::class)
@@ -101,7 +95,7 @@ internal class ProductRepositoryTest @Autowired constructor(
     }
 
 
-    fun initData() : productAndCompanyId {
+    fun initData() : CompanyRepositoryTest.productAndCompanyId {
         val newCompany = Company.createCompany(
             CreateCompanyDto(
                 companyName = "saechimdaeki Inc",
@@ -122,11 +116,11 @@ internal class ProductRepositoryTest @Autowired constructor(
             )
         )
 
-        newCompany.addCompanyProduct(newProduct)
-        val company = companyRepository.save(newCompany)
-        val productId = company.products[0].id
 
-        return productAndCompanyId(productId!!,company.id!!)
+        val company = companyRepository.save(newCompany)
+        val product = productRepository.save(newProduct)
+        company.addCompanyProduct(product)
+        return CompanyRepositoryTest.productAndCompanyId(product.id!!, company.id!!)
     }
 
     data class productAndCompanyId(val productId : Long, val CompanyId : Long)

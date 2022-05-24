@@ -54,8 +54,12 @@ class Company (
         return followers.size
     }
 
-    fun addCompanyProduct(product:Product){
-        this.products.add(product)
-        product.company = this
+    fun addCompanyProduct(product:Product?){
+        product?.let {
+            this.products.add(it)
+        } ?: kotlin.run {
+            throw RuntimeException("올바른 상품을 지정해 주세요")
+        }
+        product.settingCompany(this)
     }
 }

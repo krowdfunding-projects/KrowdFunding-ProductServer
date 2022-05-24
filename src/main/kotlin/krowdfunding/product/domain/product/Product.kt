@@ -144,4 +144,18 @@ class Product(
     fun addSupport(username:String){
         this.supporters.add(username)
     }
+
+    fun settingCompany(company: Company?){
+
+        this.company?.also {
+            it.products.remove(this)
+        }
+        this.company=company
+        company?.also { it ->
+            it.products.also {
+                it.add(this)
+            }
+        }
+        
+    }
 }
