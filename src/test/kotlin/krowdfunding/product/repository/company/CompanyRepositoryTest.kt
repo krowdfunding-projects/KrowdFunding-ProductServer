@@ -7,6 +7,7 @@ import krowdfunding.product.domain.product.Product
 import krowdfunding.product.dto.CreateCompanyDto
 import krowdfunding.product.dto.CreateProductDto
 import krowdfunding.product.repository.product.ProductRepository
+import krowdfunding.product.service.testconfig.TestConfig
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -16,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.transaction.annotation.Transactional
@@ -25,16 +27,11 @@ import javax.persistence.PersistenceContext
 
 
 @ExtendWith(SpringExtension::class)
-@DataJpaTest
+@DataJpaTest @Import(TestConfig::class)
 internal class CompanyRepositoryTest @Autowired constructor(
     val companyRepository: CompanyRepository,
     val productRepository: ProductRepository
 ){
-    @TestConfiguration
-    internal class TestConfig(@PersistenceContext val entityManager: EntityManager) {
-        @Bean
-        fun jpaQueryFactory() = JPAQueryFactory(entityManager)
-    }
     @Test
     fun `새로운 회사 등록 테스트`(){
         //given
