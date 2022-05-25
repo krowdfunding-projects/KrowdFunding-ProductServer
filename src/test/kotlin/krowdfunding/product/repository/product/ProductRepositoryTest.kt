@@ -112,7 +112,8 @@ internal class ProductRepositoryTest @Autowired constructor(
                 type = CategoryType.TECH,
                 title = "Mac m2 investment recruit",
                 fundingEndDate = LocalDate.of(2024, 12, 31),
-                targetAmount = 24000000L
+                targetAmount = 24000000L,
+                price = 10000
             )
         )
 

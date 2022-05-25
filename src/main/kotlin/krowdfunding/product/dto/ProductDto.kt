@@ -10,6 +10,9 @@ class CreateProductDto(
     @Min(value = 10)
     var quantity: Int ,
 
+    @Min(value = 1000)
+    var price : Int,
+
     @NotBlank
     var content: String, //Product Content
 

@@ -27,6 +27,9 @@ class Product(
     @Column(name = "product_quantity")
     var quantity: Int , // 남은 상품의 수
 
+    @Column(name = "product_price")
+    var price:Int , //상품의 가격
+
     @Column(name = "product_content")
     var content: String, //Product Content
 
@@ -34,7 +37,7 @@ class Product(
     var targetAmount:Long, // 펀딩 목표 금액
 
     @Column(name = "product_collected_amount")
-    var collectedAmount:Long? = null, // 모인 금액
+    var collectedAmount:Long = 0, // 모인 금액
 
     @Column(name = "product_type")
     @Enumerated(EnumType.STRING)
@@ -64,6 +67,7 @@ class Product(
     companion object{
         fun createProduct(createProductDto: CreateProductDto): Product{
             return Product(
+
                 productNumber = UUID.randomUUID().toString(),
                 quantity = createProductDto.quantity,
                 content = createProductDto.content,
@@ -72,6 +76,7 @@ class Product(
                 fundingEndDate = createProductDto.fundingEndDate,
                 isActivated = true,
                 targetAmount = createProductDto.targetAmount,
+                price = createProductDto.price
             )
         }
     }
@@ -139,8 +144,15 @@ class Product(
         return between.toInt()
     }
 
-    fun addSupport(username:String){
-        this.supporters.add(username)
+    /**
+     * 펀드라는건 상품을 몇개 구매하고
+     */
+    fun fundingSupport(number_of_product_orders : Int ,fundingUser_username:String){
+        val orderPrice = this.price * number_of_product_orders
+        this.collectedAmount+=orderPrice
+        val nowQuantity = this.quantity - number_of_product_orders
+        if(nowQuantity<0) throw IllegalArgumentException("수량 부족")
+        this.supporters.add(fundingUser_username)
     }
 
     fun settingCompany(company: Company?){
