@@ -5,8 +5,10 @@ import krowdfunding.product.dto.CreateProductDto
 import krowdfunding.product.dto.ProductInfoDto
 import krowdfunding.product.dto.UpdateProductDto
 import krowdfunding.product.repository.product.ProductRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.persistence.LockModeType
 
 @Service
 @Transactional(readOnly = true)
@@ -23,7 +25,7 @@ class ProductService(
 
     @Transactional
     fun updateProduct(productNumber: String, updateProductDto: UpdateProductDto) :String {
-        val product = (productRepository.findByProductNumber(productNumber)
+        val product = (productRepository.findByProductNumberForUpdate(productNumber)
             ?: throw RuntimeException("해당 상품은 존재하지 않습니다")).also {
             it.updateProductInfo(updateProductDto)
         }
@@ -31,8 +33,10 @@ class ProductService(
         return product.productNumber
     }
 
-    fun getProductInfo(productNumber : String) : ProductInfoDto{
-        return productRepository.getProductInfo(productNumber)
-            ?: throw RuntimeException("해당 상품은 존재하지 않습니다")
+    @Transactional
+    fun orderProduct(product_Number: String,number_of_product_orders : Int ,fundingUser_username:String){
+        with(productRepository) { findByProductNumberForUpdate(product_Number) }?.also {
+            it.fundingSupport(number_of_product_orders, fundingUser_username)
+        }
     }
 }

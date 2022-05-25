@@ -5,6 +5,7 @@ import krowdfunding.product.domain.category.CategoryType
 import krowdfunding.product.domain.company.Company
 import krowdfunding.product.dto.CreateProductDto
 import krowdfunding.product.dto.UpdateProductDto
+import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -14,7 +15,8 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "products" , indexes = [Index(columnList = "productNumber")])
-class Product(
+@DynamicUpdate
+class Product (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,11 +65,10 @@ class Product(
     @JoinColumn(name = "company_id")
     var company : Company? = null
 
-) : BaseEntity() {
+) :BaseEntity() {
     companion object{
         fun createProduct(createProductDto: CreateProductDto): Product{
             return Product(
-
                 productNumber = UUID.randomUUID().toString(),
                 quantity = createProductDto.quantity,
                 content = createProductDto.content,
@@ -145,13 +146,14 @@ class Product(
     }
 
     /**
-     * 펀드라는건 상품을 몇개 구매하고
+     * 펀드라는건 상품을 몇개 구매하면서 투자하고 서포터가 되는 형식.
      */
     fun fundingSupport(number_of_product_orders : Int ,fundingUser_username:String){
         val orderPrice = this.price * number_of_product_orders
         this.collectedAmount+=orderPrice
         val nowQuantity = this.quantity - number_of_product_orders
         if(nowQuantity<0) throw IllegalArgumentException("수량 부족")
+        this.quantity=nowQuantity
         this.supporters.add(fundingUser_username)
     }
 

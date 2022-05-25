@@ -6,7 +6,7 @@ import krowdfunding.product.domain.product.Product
 import krowdfunding.product.dto.CreateCompanyDto
 import krowdfunding.product.dto.CreateProductDto
 import krowdfunding.product.repository.company.CompanyRepository
-import krowdfunding.product.repository.company.CompanyRepositoryTest
+import krowdfunding.product.service.product.ProductService
 import krowdfunding.product.service.testconfig.TestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
@@ -18,7 +18,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
+
 
 @ExtendWith(SpringExtension::class)
 @DataJpaTest @Import(TestConfig::class)
@@ -95,7 +100,7 @@ internal class ProductRepositoryTest @Autowired constructor(
     }
 
 
-    fun initData() : CompanyRepositoryTest.productAndCompanyId {
+    fun initData() : ProductAndCompanyId {
         val newCompany = Company.createCompany(
             CreateCompanyDto(
                 companyName = "saechimdaeki Inc",
@@ -121,9 +126,9 @@ internal class ProductRepositoryTest @Autowired constructor(
         val company = companyRepository.save(newCompany)
         val product = productRepository.save(newProduct)
         company.addCompanyProduct(product)
-        return CompanyRepositoryTest.productAndCompanyId(product.id!!, company.id!!)
+        return ProductAndCompanyId(product.id!!, company.id!!,product.productNumber)
     }
 
-    data class productAndCompanyId(val productId : Long, val CompanyId : Long)
+    data class ProductAndCompanyId(val productId : Long, val CompanyId : Long, val productUUID: String)
 
 }
