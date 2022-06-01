@@ -41,6 +41,9 @@ class Product (
     @Column(name = "product_collected_amount")
     var collectedAmount:Long = 0, // 모인 금액
 
+    @Column(name = "product_percent")
+    var percentage:Int=0,
+
     @Column(name = "product_type")
     @Enumerated(EnumType.STRING)
     var type : CategoryType, //카테고리 유형
@@ -155,6 +158,7 @@ class Product (
         if(nowQuantity<0) throw IllegalArgumentException("수량 부족")
         this.quantity=nowQuantity
         this.supporters.add(fundingUser_username)
+        this.percentage = ((collectedAmount*100)/targetAmount).toInt()
     }
 
     fun settingCompany(company: Company?){
