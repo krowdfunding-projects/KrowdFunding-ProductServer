@@ -102,7 +102,7 @@ internal class CompanyRepositoryTest @Autowired constructor(
                 companyName = "saechimdaeki Inc",
                 presidentName = "saechimdaeki",
                 companyAddress = "Seoul city",
-                companyIndustrys = setOf(CategoryType.FASHION, CategoryType.TECH)
+                industryList = setOf(CategoryType.FASHION, CategoryType.TECH)
             )
         )
 
