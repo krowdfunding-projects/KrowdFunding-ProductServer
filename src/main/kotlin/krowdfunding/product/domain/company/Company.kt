@@ -41,7 +41,7 @@ class Company (
                 companyName = companyDto.companyName,
                 presidentName = companyDto.presidentName,
                 companyAddress = companyDto.companyAddress,
-                companyIndustry =  companyDto.companyIndustrys.toMutableSet()
+                companyIndustry =  companyDto.industryList.toMutableSet()
             )
         }
     }
