@@ -14,7 +14,7 @@ interface ProductRepository :JpaRepository<Product,Long> ,ProductQueryDslReposit
     @Query("select p from Product p where p.id = :productId")
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints(QueryHint(name = "javax.persistence.lock.timeout", value = "3000"))
-    fun findByProductForUpdate(@Param("productNumber") productId: Long): Product?
+    fun findByProductForUpdate(@Param("productId") productId: Long): Product?
 
     @Query("select p from Product p where p.id = :productId")
     @Lock(LockModeType.PESSIMISTIC_WRITE)
