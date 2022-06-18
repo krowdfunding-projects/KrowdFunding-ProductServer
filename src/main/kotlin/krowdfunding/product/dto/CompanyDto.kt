@@ -14,6 +14,20 @@ class CreateCompanyDto(
     @NotBlank
     val companyAddress : String,
 
-    val companyIndustrys : Set<CategoryType>
+    val industryList : Set<CategoryType>
+)
+
+class CompanyInfoDto(
+
+    val companyName: String,
+
+    //회사 사장 이름
+    val presidentName:String,
+
+    val companyAddress: String,
+
+    val companyIndustry :MutableSet<CategoryType>,
+
+    val followerCnt : Int
 )
 
