@@ -89,7 +89,7 @@ internal class ProductRepositoryTest @Autowired constructor(
 
         val number = product.productNumber
         //then
-        productRepository.run { getProductInfo(number) }?.also {
+        productRepository.run { getProductInfo(productId = product.id!!) }?.also {
             assertThat(it).isNotNull
             assertThat(it.companyName).contains("saechimdaeki","Inc")
             assertThat(it.content).isNotEmpty()

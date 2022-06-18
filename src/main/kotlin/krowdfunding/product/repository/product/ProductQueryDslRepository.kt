@@ -4,5 +4,5 @@ import krowdfunding.product.dto.ProductInfoDto
 
 interface ProductQueryDslRepository {
 
-    fun getProductInfo(productNumber : String) : ProductInfoDto?
+    fun getProductInfo(productId : Long) : ProductInfoDto?
 }

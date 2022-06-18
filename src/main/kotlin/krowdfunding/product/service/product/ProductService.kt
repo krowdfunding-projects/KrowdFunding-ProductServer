@@ -4,23 +4,28 @@ import krowdfunding.product.domain.product.Product
 import krowdfunding.product.dto.CreateProductDto
 import krowdfunding.product.dto.ProductInfoDto
 import krowdfunding.product.dto.UpdateProductDto
+import krowdfunding.product.repository.company.CompanyRepository
 import krowdfunding.product.repository.product.ProductRepository
-import org.springframework.data.jpa.repository.Lock
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.LockModeType
 
 @Service
 @Transactional(readOnly = true)
 class ProductService(
-    val productRepository: ProductRepository
+    val productRepository: ProductRepository,
+    val companyRepository: CompanyRepository
 ) {
 
     @Transactional
-    fun createNewProduct(createProductDto: CreateProductDto): Long {
-        val newProduct = Product.createProduct(createProductDto)
-        val save = productRepository.save(newProduct)
-        return save.id ?: throw RuntimeException("새로운 상품을 만드는데 실패하였습니다")
+    fun createNewProduct(createProductDto: CreateProductDto , companyId:Long): Long {
+
+        companyRepository.findByIdOrNull(companyId)?.let {
+            val save = productRepository.save(Product.createProduct(createProductDto))
+            it.products.add(save)
+            return save.id ?: throw RuntimeException("새로운 상품을 만드는데 실패하였습니다")
+        }
+        throw RuntimeException("새로운 상품을 만드는데 실패하였습니다")
     }
 
     @Transactional
@@ -38,5 +43,12 @@ class ProductService(
         with(productRepository) { findByProductNumberForUpdate(product_Number) }?.also {
             it.fundingSupport(number_of_product_orders, fundingUser_username)
         }
+    }
+
+    fun getProductInfo(productId: Long) :ProductInfoDto{
+        productRepository.getProductInfo(productId = productId)?.let {
+            return it
+        }
+        throw RuntimeException("해당 상품을 찾을 수 없습니다")
     }
 }
