@@ -9,7 +9,7 @@ import krowdfunding.product.dto.ProductInfoDto
 class ProductRepositoryImpl(val jpaQueryFactory: JPAQueryFactory)
     : ProductQueryDslRepository {
 
-    override fun getProductInfo(productNumber: String): ProductInfoDto? {
+    override fun getProductInfo(productId: Long): ProductInfoDto? {
         return jpaQueryFactory.select(
             Projections.constructor(ProductInfoDto::class.java,
                 product.quantity,
@@ -25,7 +25,7 @@ class ProductRepositoryImpl(val jpaQueryFactory: JPAQueryFactory)
         ).from(product)
             .leftJoin(product.company, company)
             .distinct()
-            .where(product.productNumber.eq(productNumber))
+            .where(product.id.eq(productId))
             .fetchFirst()
 
     }
