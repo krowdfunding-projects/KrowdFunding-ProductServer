@@ -29,8 +29,8 @@ class ProductService(
     }
 
     @Transactional
-    fun updateProduct(productNumber: String, updateProductDto: UpdateProductDto) :String {
-        val product = (productRepository.findByProductNumberForUpdate(productNumber)
+    fun updateProduct(productId: Long, updateProductDto: UpdateProductDto) :String {
+        val product = (productRepository.findByProductForUpdate(productId)
             ?: throw RuntimeException("해당 상품은 존재하지 않습니다")).also {
             it.updateProductInfo(updateProductDto)
         }
@@ -39,8 +39,8 @@ class ProductService(
     }
 
     @Transactional
-    fun orderProduct(product_Number: String,number_of_product_orders : Int ,fundingUser_username:String){
-        with(productRepository) { findByProductNumberForUpdate(product_Number) }?.also {
+    fun orderProduct(productId: Long,number_of_product_orders : Int ,fundingUser_username:String){
+        with(productRepository) { findByProductForUpdate(productId) }?.also {
             it.fundingSupport(number_of_product_orders, fundingUser_username)
         }
     }

@@ -49,7 +49,7 @@ internal class ProductServiceTest @Autowired constructor(
         for (i in 0 until threadCnt) {
             service.execute {
                 try {
-                    productService.orderProduct(product.productNumber,10,"SAECHIM")
+                    productService.orderProduct(product.id!!,10,"SAECHIM")
                         .apply { successCnt.getAndIncrement() }.run { log.info("비관락 로맨틱 성공적") }
                 } catch (e: Exception) {
                     failCnt.getAndIncrement()
